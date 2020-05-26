@@ -1,5 +1,20 @@
 #include <Arduino.h>
 
-void setup(){}
+#include <Constants.h>
+#include <networking/WebServer.h>
+#include <networking/WifiClient.h>
 
-void loop(){}
+WebServer webServer;
+
+void setup() {
+    Serial.begin(9600);
+    FileSystem.begin();
+
+    WifiClient::begin(WIFI_SSID, WIFI_PASSWORD);
+
+    webServer.begin();
+}
+
+void loop() {
+    DefaultLooper.tick();
+}
