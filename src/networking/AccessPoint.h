@@ -5,11 +5,7 @@
 
 class AccessPoint {
 public:
-    static void begin(char *ssid, char *password);
-
-private:
-    static DNSServer dnsServer;
+    static void begin(const char *ssid, const char *password);
 };
-
 
 #endif //BOMBA_ACCESSPOINT_H
