@@ -4,25 +4,20 @@
 #include <vector>
 #include <ESPAsyncWebServer.h> // this is universal over ESP32/ESP8266
 
+#include "JsonConnector.h"
 #include <Constants.h>
 
 class WebServer {
 public:
     WebServer();
 
-    void begin();
-
-    // TODO send and receive ws
+    void begin(JsonConnector &jsonConnector);
 
 private:
     AsyncWebServer *webServer;
-    AsyncWebSocket *webSocket;
-
     bool send = false;
 
     void installCaptivePortalRedirects();
-
-    void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, uint8_t *data, size_t len);
 
     static bool handleStaticFile(AsyncWebServerRequest *request) {
         String path = STATIC_FILES_PREFIX + request->url();
@@ -85,8 +80,6 @@ private:
 
         return F("text/plain");
     }
-
 };
-
 
 #endif //BOMBA_WEBSERVER_H
