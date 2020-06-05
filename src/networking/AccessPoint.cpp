@@ -19,7 +19,10 @@ void AccessPoint::begin(const char *ssid, const char *password) {
     dnsServer->setErrorReplyCode(DNSReplyCode::NoError);
     dnsServer->start(DNS_PORT, "*", apIP);
 
-    DefaultLooper.add([dnsServer] { dnsServer->processNextRequest(); });
+    NetworkTasker.loop([dnsServer] {
+        dnsServer->processNextRequest();
+        taskYIELD();
+    });
 
     delay(500);
     Serial.print(F("AP IP address: "));

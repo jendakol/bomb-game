@@ -12,13 +12,14 @@ void setup() {
     Serial.begin(9600);
     FileSystem.begin();
 
-    WifiClient::begin(WIFI_SSID, WIFI_PASSWORD);
-
-    webServer.begin(jsonConnector);
+    NetworkTasker.once([] {
+        WifiClient::begin(WIFI_SSID, WIFI_PASSWORD);
+        webServer.begin(jsonConnector);
+    });
 
     // TODO this is just example code
     long c = 0;
-    DefaultLooper.add([c]() mutable {
+    DefaultTasker.loopEvery(10, [c]() mutable {
         c++;
 
         StaticJsonDocument<1024> json;
@@ -36,8 +37,6 @@ void setup() {
             jsonConnector.send(json);
             json.clear();
         }
-
-        delay(10);
     });
 
     jsonConnector.subscribe([](const JsonDocument &json) {
@@ -47,5 +46,5 @@ void setup() {
 }
 
 void loop() {
-    DefaultLooper.tick();
+    // no op - everything is handled by native tasks through Tasker
 }
