@@ -1,4 +1,4 @@
-#include <ESP8266WiFi.h> // TODO ESP32
+#include <WiFi.h>
 
 #include <Constants.h>
 #include "AccessPoint.h"

@@ -2,7 +2,7 @@
 #define BOMBA_WIFICLIENT_H
 
 #include <Arduino.h>
-#include <ESP8266WiFi.h> // TODO ESP
+#include <WiFi.h>
 
 class WifiClient {
 public:

@@ -2,6 +2,7 @@
 #define BOMBA_CONSTANTS_H
 
 #include <FS.h>
+#include <SPIFFS.h>
 
 #include "Looper.h"
 
@@ -13,6 +14,6 @@
 #define DNS_PORT 53
 #define WEBSOCKET_PATH "/ws"
 
-static FS FileSystem = SPIFFS;
+#define FileSystem SPIFFS
 
 #endif //BOMBA_CONSTANTS_H
