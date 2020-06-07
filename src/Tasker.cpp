@@ -2,7 +2,6 @@
 
 #include "Tasker.h"
 
-#include <map>
 #include <mutex>
 
 std::vector<std::function<void(void)>> ops;
@@ -12,48 +11,46 @@ Tasker::Tasker(int core) {
     this->core = core;
 }
 
-[[noreturn]] void executeLoop(void *notUsed) {
-    auto op = ops.back();
-    ops.pop_back();
-    mutex.unlock();
+[[noreturn]] static void executeLoop(void *uarg) {
+    auto *fnc_ptr = static_cast<std::function<void(void)> *>(uarg);
+    auto fnc = std::move(*fnc_ptr);
+    delete fnc_ptr;
 
     for (;;) {
-        op();
+        fnc();
     }
 }
 
-void execute(void *notUsed) {
-    auto op = ops.back();
-    mutex.unlock();
+void execute(void *uarg) {
+    auto *fnc_ptr = static_cast<std::function<void(void)> *>(uarg);
+    auto fnc = std::move(*fnc_ptr);
+    delete fnc_ptr;
 
-    op();
+    fnc();
 }
 
-void Tasker::loop(const std::function<void(void)> &op) const {
-    mutex.lock();
-    ops.emplace_back([op] {
+void Tasker::loop(std::function<void(void)> op) const {
+    auto *fnc = new std::function<void(void)>{[op] {
         op();
         taskYIELD();
-    });
-    xTaskCreatePinnedToCore(executeLoop, "", 10000, NULL, 1, NULL, core);
+    }};
+    xTaskCreatePinnedToCore(executeLoop, "", 10000, static_cast<void *>(fnc), 1, NULL, core);
 }
 
-void Tasker::loopEvery(int millis, const std::function<void(void)> &op) const {
-    mutex.lock();
-    ops.emplace_back([op, millis] {
+void Tasker::loopEvery(int millis, std::function<void(void)> op) const {
+    auto *fnc = new std::function<void(void)>{[op, millis] {
         op();
         vTaskDelay(millis / portTICK_PERIOD_MS);
-    });
-    xTaskCreatePinnedToCore(executeLoop, "", 10000, NULL, 1, NULL, core);
+    }};
+    xTaskCreatePinnedToCore(executeLoop, "", 10000, static_cast<void *>(fnc), 1, NULL, core);
 }
 
-void Tasker::once(const std::function<void(void)> &op) const {
-    mutex.lock();
-    ops.emplace_back([op] {
+void Tasker::once(std::function<void(void)> op) const {
+    auto *fnc = new std::function<void(void)>{[op] {
         op();
         vTaskDelete(NULL);
-    });
-    xTaskCreatePinnedToCore(execute, "", 10000, NULL, 1, NULL, core);
+    }};
+    xTaskCreatePinnedToCore(execute, "", 10000, static_cast<void *>(fnc), 1, NULL, core);
 }
 
 

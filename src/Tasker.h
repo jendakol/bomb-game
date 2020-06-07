@@ -8,9 +8,11 @@ class Tasker {
 public:
     explicit Tasker(int core);
 
-    void once(const std::function<void(void)> &op) const;
-    void loop(const std::function<void(void)> &op) const;
-    void loopEvery(int millis, const std::function<void(void)> &op) const;
+    void once(std::function<void(void)> op) const;
+
+    void loop(std::function<void(void)> op) const;
+
+    void loopEvery(int millis, std::function<void(void)> op) const;
 
 private:
     int core;
