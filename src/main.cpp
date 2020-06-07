@@ -5,12 +5,17 @@
 #include <networking/JsonConnector.h>
 #include <networking/WifiClient.h>
 
+#include <wiring/WiringManager.h>
+
+WiringManager wiringManager;
+
 WebServer webServer;
 JsonConnector jsonConnector;
 
 void setup() {
     Serial.begin(9600);
     FileSystem.begin();
+    wiringManager.begin();
 
     NetworkTasker.once([] {
         WifiClient::begin(WIFI_SSID, WIFI_PASSWORD);
@@ -42,6 +47,19 @@ void setup() {
     jsonConnector.subscribe([](const JsonDocument &json) {
         Serial.print("JSON received: msg=");
         Serial.println(json["msg"].as<char *>());
+    });
+
+    // wiring example:
+
+    wiringManager.registerPcf(3, 0, 0x20);
+
+    DefaultTasker.loopEvery(1000, [] {
+        byte value = wiringManager.pcfRead8(3, 0);
+
+        char buff[16]{0};
+        ltoa(value, buff, 10);
+
+        wiringManager.alphaNumWrite(buff);
     });
 }
 

@@ -16,4 +16,10 @@
 
 #define FileSystem SPIFFS
 
+#define ADDR_MULTIPLEXER 0x70
+#define ADDR_ALPHANUM4 0x71
+
+#define CHANNEL_ALPHANUM4 6
+
+
 #endif //BOMBA_CONSTANTS_H
