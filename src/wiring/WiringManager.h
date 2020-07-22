@@ -28,6 +28,8 @@ public:
 
     void alphaNumWrite(const char segments[4]);
 
+    int keyboardRead();
+
     void selectChannel(const uint8_t channel);
 
 private:

@@ -94,3 +94,11 @@ void WiringManager::alphaNumWrite(const char segments[4]) {
 
     alphaNum4.writeDisplay();
 }
+
+int WiringManager::keyboardRead() {
+    std::lock_guard<std::mutex> lg(mutex);
+
+    selectChannel(CHANNEL_KEYBOARD);
+
+    return 0; // TODO
+}

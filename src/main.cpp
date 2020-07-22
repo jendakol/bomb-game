@@ -5,17 +5,22 @@
 #include <networking/JsonConnector.h>
 #include <networking/WifiClient.h>
 
+#include <logic/StateManager.h>
+#include <logic/ModulesManager.h>
 #include <wiring/WiringManager.h>
 
 WiringManager wiringManager;
 
 WebServer webServer;
 JsonConnector jsonConnector;
+StateManager stateManager(&jsonConnector, &wiringManager);
+ModulesManager modulesManager(&stateManager, &wiringManager);
 
 void setup() {
     Serial.begin(9600);
     FileSystem.begin();
     wiringManager.begin();
+    modulesManager.begin();
 
     NetworkTasker.once([] {
         WifiClient::begin(WIFI_SSID, WIFI_PASSWORD);
@@ -32,6 +37,15 @@ void setup() {
         if (c % 1000 == 0) {
             json["op"] = "msg";
             json["text"] = "Ahoj :-)";
+            jsonConnector.send(json);
+            json.clear();
+
+            json["op"] = "uptime";
+
+            char buff[16]{0};
+            ltoa(millis(), buff, 10);
+
+            json["value"] = buff;
             jsonConnector.send(json);
             json.clear();
         }
