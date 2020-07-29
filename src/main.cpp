@@ -20,6 +20,7 @@ void setup() {
     Serial.begin(9600);
     FileSystem.begin();
     wiringManager.begin();
+    stateManager.begin();
     modulesManager.begin();
 
     NetworkTasker.once([] {

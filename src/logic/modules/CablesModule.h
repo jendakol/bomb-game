@@ -5,11 +5,12 @@
 
 class CablesModule {
 public:
-    explicit CablesModule(WiringManager *wiringManager);
+    explicit CablesModule(StateManager *stateManager,WiringManager *wiringManager);
 
     void begin();
 
 private:
+    StateManager *stateManager;
     WiringManager *wiringManager;
 };
 

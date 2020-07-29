@@ -5,11 +5,12 @@
 
 class KeyboardModule {
 public:
-    explicit KeyboardModule(WiringManager *wiringManager);
+    explicit KeyboardModule(StateManager *stateManager, WiringManager *wiringManager);
 
     void begin();
 
 private:
+    StateManager *stateManager;
     WiringManager *wiringManager;
 };
 

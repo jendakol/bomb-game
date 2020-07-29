@@ -5,6 +5,23 @@
 
 // TODO handle errors
 
+WiringManager::WiringManager() {
+    // initialize keyboard:
+    const byte ROWS = 4;
+    const byte COLS = 4;
+    char keys[ROWS][COLS] = {
+            {'1', '2', '3', 'A'},
+            {'4', '5', '6', 'B'},
+            {'7', '8', '9', 'C'},
+            {'*', '0', '#', 'D'}
+    };
+
+    byte rowPins[ROWS] = {0, 1, 2, 3};
+    byte colPins[COLS] = {4, 5, 6, 7};
+
+    this->keypad = new Keypad_I2C(makeKeymap(keys), rowPins, colPins, ROWS, COLS, 0x20, 1);
+}
+
 void WiringManager::begin() {
     std::lock_guard<std::mutex> lg(mutex);
 
@@ -18,6 +35,9 @@ void WiringManager::begin() {
     alphaNum4.writeDigitAscii(2, '-');
     alphaNum4.writeDigitAscii(3, '-');
     alphaNum4.writeDisplay();
+
+    selectChannel(CHANNEL_KEYBOARD);
+    keypad->begin();
 }
 
 void WiringManager::selectChannel(const uint8_t channel) {
@@ -95,10 +115,17 @@ void WiringManager::alphaNumWrite(const char segments[4]) {
     alphaNum4.writeDisplay();
 }
 
-int WiringManager::keyboardRead() {
+char WiringManager::keyboardRead() {
     std::lock_guard<std::mutex> lg(mutex);
 
     selectChannel(CHANNEL_KEYBOARD);
 
-    return 0; // TODO
+    // TODO great, but doesn't work
+
+    auto value = this->keypad->getKey();
+
+//    Serial.print("Keyboard value: ");
+//    Serial.println(value);
+
+    return value; // TODO
 }

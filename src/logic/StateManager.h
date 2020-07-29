@@ -3,24 +3,36 @@
 
 #include <wiring/WiringManager.h>
 #include <networking/JsonConnector.h>
+#include <logic/modules/VisualModule.h>
 
 #define STATE_STARTED 0
 #define STATE_RUNNING 1
 #define STATE_DEFUSED 2
 #define STATE_EXPLODED 2
 
+#define MODULE_KEYBOARD 1
+#define MODULE_CABLES 2
+
 class StateManager {
 public:
     explicit StateManager(JsonConnector *jsonConnector, WiringManager *wiringManager);
 
-    void setState(int state);
+    void begin();
 
     int getState();
 
+    void start();
+
+    void verify(int module, String answer);
+
 private:
-    int state;
     JsonConnector *jsonConnector;
-    WiringManager *wiringManager;
+    VisualModule *visualModule;
+    int state;
+    unsigned long started_at;
+
+    void sendStatusUpdate();
+    void visualizeStatus();
 };
 
 

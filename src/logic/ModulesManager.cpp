@@ -1,10 +1,8 @@
 #include "ModulesManager.h"
 
 ModulesManager::ModulesManager(StateManager *stateManager, WiringManager *wiringManager) {
-    this->stateManager = stateManager;
-
-    this->keyboardModule = new KeyboardModule(wiringManager);
-    this->cablesModule = new CablesModule(wiringManager);
+    this->keyboardModule = new KeyboardModule(stateManager, wiringManager);
+    this->cablesModule = new CablesModule(stateManager, wiringManager);
 }
 
 void ModulesManager::begin() {

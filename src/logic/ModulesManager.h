@@ -14,7 +14,6 @@ public:
     void begin();
 
 private:
-    StateManager *stateManager;
     KeyboardModule *keyboardModule;
     CablesModule *cablesModule;
 };
