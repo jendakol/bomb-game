@@ -12,10 +12,30 @@ void KeyboardModule::begin() {
         When confirmed, call this->stateManager->verify.
      */
 
+    clean();
+
     DefaultTasker.loopEvery(200, [this] {
-//        const int key = this->wiringManager->keyboardRead(); // TODO
-//        if (key > 0) {
-////             ...
-//        }
+        char pressed = this->wiringManager->keyboardRead();
+        switch (pressed) {
+            case '\0':
+                return;
+            case '*':
+                clean();
+                break;
+            case '#':
+                this->stateManager->verify(MODULE_KEYBOARD, pressedKeyBuffer);
+                clean();
+                break;
+            default:
+                append(pressed);
+        }
     });
+}
+
+void KeyboardModule::clean() {
+    this->pressedKeyBuffer = "";
+}
+
+void KeyboardModule::append(uint8_t c) {
+    this->pressedKeyBuffer.concat(c);
 }

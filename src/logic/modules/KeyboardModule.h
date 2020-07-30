@@ -10,8 +10,14 @@ public:
     void begin();
 
 private:
+
+    void clean();
+
+    void append(uint8_t c);
+
     StateManager *stateManager;
     WiringManager *wiringManager;
+    String pressedKeyBuffer;
 };
 
 #endif //BOMBA_KEYBOARDMODULE_H
