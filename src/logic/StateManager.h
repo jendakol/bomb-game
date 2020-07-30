@@ -10,9 +10,6 @@
 #define STATE_DEFUSED 2
 #define STATE_EXPLODED 2
 
-#define MODULE_KEYBOARD 1
-#define MODULE_CABLES 2
-
 class StateManager {
 public:
     explicit StateManager(JsonConnector *jsonConnector, WiringManager *wiringManager);
@@ -23,16 +20,24 @@ public:
 
     void start();
 
-    void verify(int module, String answer);
+    void verify(int module, const String &answer);
+
+    String getActAnswer(int module);
 
 private:
     JsonConnector *jsonConnector;
     VisualModule *visualModule;
     int state;
     unsigned long started_at;
+    std::map<int, std::vector<String>> answers;
+    std::map<int, std::vector<String>> puzzles;
+    std::map<int, std::vector<String>::iterator> actAnswers;
 
     void sendStatusUpdate();
+
     void visualizeStatus();
+
+    std::vector<String> loadJsonItem(DynamicJsonDocument *doc, int module);
 };
 
 

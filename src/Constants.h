@@ -3,6 +3,7 @@
 
 #include <FS.h>
 #include <SPIFFS.h>
+#include <map>
 
 #include "Tasker.h"
 
@@ -24,5 +25,15 @@
 
 #define TIME_TO_DEFUSE 45 * 60
 
+#define PUZZLES_PATH "/puzzles/puzzles.json"
+#define ANSWERS_PATH "/puzzles/answers.json"
+
+#define MODULE_KEYBOARD 1
+#define MODULE_CABLES 2
+
+static std::map<int, String> MODULE_NAME_MAPPING = {
+        {MODULE_KEYBOARD, "keyboard"},
+        {MODULE_CABLES, "cables"}
+};
 
 #endif //BOMBA_CONSTANTS_H
