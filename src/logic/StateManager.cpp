@@ -12,8 +12,7 @@ StateManager::StateManager(JsonConnector *jsonConnector, WiringManager *wiringMa
 void StateManager::begin() {
     this->visualModule->begin();
 
-    // Load answers to puzzles (puzzles/answers.json), save them.
-    // TODO initialize inner counters of puzzles/answers and of progress (reported to visual module).
+    // TODO Initialize inner counters of puzzles/answers and of progress (reported to visual module).
 
     //load files
     DynamicJsonDocument answersJson(512);
@@ -40,10 +39,10 @@ void StateManager::begin() {
     puzzlesFile.close();
 
     DefaultTasker.loopEvery(1000, [this] {
-        if (state == STATE_RUNNING)
-            this->updateRemainingTime(-1);
-
-        // TODO explode
+        if (state == STATE_RUNNING) {
+            uint rem = this->shortenRemainingTime(1);
+            if (rem == 0) this->explode();
+        }
     });
 }
 
@@ -60,12 +59,23 @@ void StateManager::start() {
 }
 
 void StateManager::defuse() {
-    this->started_at = 0;
     this->state = STATE_DEFUSED;
+    this->started_at = 0;
     this->sendStatusUpdate();
 
     this->setRemainingTime(0);
     this->visualModule->showDefused();
+    Serial.println("DEFUSED");
+}
+
+void StateManager::explode() {
+    this->state = STATE_EXPLODED;
+    this->started_at = 0;
+    this->sendStatusUpdate();
+
+    this->setRemainingTime(0);
+    this->visualModule->showExploded();
+    Serial.println("EXPLODED");
 }
 
 void StateManager::verify(int module, const String &answer) {
@@ -73,15 +83,16 @@ void StateManager::verify(int module, const String &answer) {
     // explode when there's too much of failures. Make constant (Constants.h) for the threshold. Accept info about
     // completeness of each module and don't forget to switch to DEFUSED state.
 
-    Serial.print("Verify: module ");
+    Serial.print("Verify; module ");
     Serial.print(module);
-    Serial.print("Answer: ");
+    Serial.print(" answer ");
     Serial.println((String) answer);
 
     if (!answer.equals(getActAnswer(module))) {
         //TODO bad answer
         Serial.println("Bad answer");
-        updateRemainingTime(-BAD_ANSWER_PENALIZATION);
+        // This may cause explosion:
+        shortenRemainingTime(BAD_ANSWER_PENALIZATION);
     } else {
         //TODO correct answer
         Serial.println("Good answer");
@@ -112,13 +123,18 @@ std::vector<String> StateManager::loadJsonItem(DynamicJsonDocument *doc, int mod
     return result;
 }
 
-unsigned int StateManager::updateRemainingTime(int delta) {
-    std::lock_guard<std::mutex> lg(mutex_time);
+unsigned int StateManager::shortenRemainingTime(int delta) {
+    if (this->remaining_secs < delta) {
+        this->explode();
+    } else {
+        std::lock_guard<std::mutex> lg(mutex_time);
 
-    this->remaining_secs += delta;
-    this->visualModule->updateTime(this->remaining_secs);
+        this->remaining_secs -= delta;
+        this->visualModule->updateTime(this->remaining_secs);
 
-    this->sendStatusUpdate();
+        this->sendStatusUpdate();
+    }
+
     return this->remaining_secs;
 }
 

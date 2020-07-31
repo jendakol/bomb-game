@@ -19,7 +19,10 @@ public:
     int getState();
 
     void start();
+
     void defuse();
+
+    void explode();
 
     void verify(int module, const String &answer);
 
@@ -42,7 +45,7 @@ private:
 
     void setRemainingTime(unsigned int value);
 
-    unsigned int updateRemainingTime(int delta);
+    unsigned int shortenRemainingTime(int delta);
 
     std::vector<String> loadJsonItem(DynamicJsonDocument *doc, int module);
 };

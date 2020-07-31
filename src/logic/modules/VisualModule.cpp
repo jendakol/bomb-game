@@ -39,4 +39,8 @@ void VisualModule::showDefused() {
     // TODO show defused
 }
 
+void VisualModule::showExploded() {
+    // TODO show exploded
+}
+
 // TODO add methods for displaying progress on LED ring - take % as input?

@@ -14,6 +14,8 @@ public:
 
     void showDefused();
 
+    void showExploded();
+
 private:
     WiringManager *wiringManager;
     unsigned int remaining_secs = 0;
