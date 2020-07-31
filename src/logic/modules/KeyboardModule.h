@@ -13,7 +13,7 @@ private:
 
     void clean();
 
-    void append(uint8_t c);
+    void append(char c);
 
     StateManager *stateManager;
     WiringManager *wiringManager;

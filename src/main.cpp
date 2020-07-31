@@ -64,17 +64,11 @@ void setup() {
         Serial.println(json["msg"].as<char *>());
     });
 
-    // wiring example:
+    // TODO handle by web UI:
+    DefaultTasker.once([] {
+        vTaskDelay(3000 / portTICK_PERIOD_MS);
 
-    wiringManager.registerPcf(3, 0, 0x20);
-
-    DefaultTasker.loopEvery(1000, [] {
-        byte value = wiringManager.pcfRead8(3, 0);
-
-        char buff[16]{0};
-        ltoa(value, buff, 10);
-
-        wiringManager.alphaNumWrite(buff);
+        stateManager.start();
     });
 }
 

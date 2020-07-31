@@ -8,13 +8,18 @@ class VisualModule {
 public:
     explicit VisualModule(WiringManager *wiringManager);
 
-    void begin(unsigned int remaining_secs);
+    void begin();
+
     void updateTime(unsigned int remaining_secs);
+
+    void showDefused();
 
 private:
     WiringManager *wiringManager;
-    unsigned int remaining_secs;
+    unsigned int remaining_secs = 0;
+
     void updateLedRing();
+
     void updateTimeDisplay();
 };
 

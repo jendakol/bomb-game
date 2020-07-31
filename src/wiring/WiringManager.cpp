@@ -5,22 +5,14 @@
 
 // TODO handle errors
 
-WiringManager::WiringManager() {
-    // initialize keyboard:
-    const byte ROWS = 4;
-    const byte COLS = 4;
-    char keys[ROWS][COLS] = {
-            {'1', '2', '3', 'A'},
-            {'4', '5', '6', 'B'},
-            {'7', '8', '9', 'C'},
-            {'*', '0', '#', 'D'}
-    };
+char keyboardKeys[4][4] = {
+        {'1', '2', '3', 'A'},
+        {'4', '5', '6', 'B'},
+        {'7', '8', '9', 'C'},
+        {'*', '0', '#', 'D'}
+};
 
-    byte rowPins[ROWS] = {0, 1, 2, 3};
-    byte colPins[COLS] = {4, 5, 6, 7};
-
-    this->keypad = new Keypad_I2C(makeKeymap(keys), rowPins, colPins, ROWS, COLS, 0x20, 1);
-}
+#define INDEX_KEYBOARD 0
 
 void WiringManager::begin() {
     std::lock_guard<std::mutex> lg(mutex);
@@ -36,8 +28,7 @@ void WiringManager::begin() {
     alphaNum4.writeDigitAscii(3, '-');
     alphaNum4.writeDisplay();
 
-    selectChannel(CHANNEL_KEYBOARD);
-    keypad->begin();
+    addPcf(CHANNEL_KEYBOARD, INDEX_KEYBOARD, ADDR_KEYBOARD);
 }
 
 void WiringManager::selectChannel(const uint8_t channel) {
@@ -79,6 +70,10 @@ void WiringManager::registerPcf(const uint8_t channel, const uint8_t index, cons
     std::lock_guard<std::mutex> lg(mutex);
     selectChannel(channel);
 
+    addPcf(channel, index, addr);
+}
+
+void WiringManager::addPcf(const uint8_t channel, const uint8_t index, const uint8_t addr) {
     PCF8574 pcf(addr);
     pcf.begin();
 
@@ -117,15 +112,24 @@ void WiringManager::alphaNumWrite(const char segments[4]) {
 
 char WiringManager::keyboardRead() {
     std::lock_guard<std::mutex> lg(mutex);
+    auto pcf = getPcf(CHANNEL_KEYBOARD, INDEX_KEYBOARD);
 
-    selectChannel(CHANNEL_KEYBOARD);
+    char key = 0;
 
-    // TODO great, but doesn't work
+    for (int row = 0; row <= 3; row++) {
+        pcf.write8(0xff ^ (1 << row));
 
-    auto value = this->keypad->getKey();
+        const auto value = (pcf.read8() & 0xf0) >> 4;
+        int col = 0;
+        for (; col <= 3; col++) {
+            auto x = value + (1 << col);
+            if (x == 0xf) break;
+        }
 
-//    Serial.print("Keyboard value: ");
-//    Serial.println(value);
+        if (col > 3) continue;
 
-    return value; // TODO
+        key = keyboardKeys[3 - row][3 - col];
+    }
+
+    return key;
 }

@@ -6,7 +6,6 @@
 
 #include <PCF8574.h>
 #include "Adafruit_LEDBackpack.h"
-#include <Keypad_I2C.h>
 
 #include <Constants.h>
 
@@ -15,7 +14,6 @@ typedef std::map<uint8_t, MapInner> PcfMap;
 
 class WiringManager {
 public:
-    explicit WiringManager();
     void begin();
 
     void registerPcf(const uint8_t channel, const uint8_t index, uint8_t addr);
@@ -38,7 +36,8 @@ private:
     std::mutex mutex;
     PcfMap pcfs;
     Adafruit_AlphaNum4 alphaNum4;
-    Keypad_I2C *keypad;
+
+    void addPcf(const uint8_t channel, const uint8_t index, const uint8_t addr);
 
     PCF8574 &getPcf(uint8_t channel, uint8_t index);
 };

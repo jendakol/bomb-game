@@ -5,10 +5,12 @@ StateManager::StateManager(JsonConnector *jsonConnector, WiringManager *wiringMa
     this->visualModule = new VisualModule(wiringManager);
 
     this->state = STATE_STARTED;
+
+    wiringManager->alphaNumWrite("----");
 }
 
 void StateManager::begin() {
-    this->visualModule->begin(TIME_TO_DEFUSE);
+    this->visualModule->begin();
 
     // Load answers to puzzles (puzzles/answers.json), save them.
     // TODO initialize inner counters of puzzles/answers and of progress (reported to visual module).
@@ -36,6 +38,13 @@ void StateManager::begin() {
 
     answersFile.close();
     puzzlesFile.close();
+
+    DefaultTasker.loopEvery(1000, [this] {
+        if (state == STATE_RUNNING)
+            this->updateRemainingTime(-1);
+
+        // TODO explode
+    });
 }
 
 int StateManager::getState() {
@@ -46,6 +55,17 @@ void StateManager::start() {
     this->started_at = millis();
     this->state = STATE_RUNNING;
     this->sendStatusUpdate();
+
+    this->setRemainingTime(TIME_TO_DEFUSE);
+}
+
+void StateManager::defuse() {
+    this->started_at = 0;
+    this->state = STATE_DEFUSED;
+    this->sendStatusUpdate();
+
+    this->setRemainingTime(0);
+    this->visualModule->showDefused();
 }
 
 void StateManager::verify(int module, const String &answer) {
@@ -53,11 +73,20 @@ void StateManager::verify(int module, const String &answer) {
     // explode when there's too much of failures. Make constant (Constants.h) for the threshold. Accept info about
     // completeness of each module and don't forget to switch to DEFUSED state.
 
-    if (!answer.equals(*this->actAnswers[module])) {
+    Serial.print("Verify: module ");
+    Serial.print(module);
+    Serial.print("Answer: ");
+    Serial.println((String) answer);
+
+    if (!answer.equals(getActAnswer(module))) {
         //TODO bad answer
+        Serial.println("Bad answer");
+        updateRemainingTime(-BAD_ANSWER_PENALIZATION);
     } else {
         //TODO correct answer
+        Serial.println("Good answer");
         ++this->actAnswers[module];
+        // TODO defuse, if everything done!
     }
 
     this->visualizeStatus();
@@ -81,6 +110,24 @@ std::vector<String> StateManager::loadJsonItem(DynamicJsonDocument *doc, int mod
         result.push_back(v.as<String>());
     }
     return result;
+}
+
+unsigned int StateManager::updateRemainingTime(int delta) {
+    std::lock_guard<std::mutex> lg(mutex_time);
+
+    this->remaining_secs += delta;
+    this->visualModule->updateTime(this->remaining_secs);
+
+    this->sendStatusUpdate();
+    return this->remaining_secs;
+}
+
+void StateManager::setRemainingTime(unsigned int value) {
+    std::lock_guard<std::mutex> lg(mutex_time);
+
+    this->remaining_secs = value;
+    this->visualModule->updateTime(this->remaining_secs);
+    this->sendStatusUpdate();
 }
 
 
