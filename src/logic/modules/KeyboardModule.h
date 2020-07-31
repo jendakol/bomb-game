@@ -18,6 +18,8 @@ private:
     StateManager *stateManager;
     WiringManager *wiringManager;
     String pressedKeyBuffer;
+    char lastKey = 0;
+    unsigned long lastKeyTime = 0;
 };
 
 #endif //BOMBA_KEYBOARDMODULE_H

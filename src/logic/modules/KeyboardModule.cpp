@@ -1,6 +1,8 @@
 #include <logic/StateManager.h>
 #include "KeyboardModule.h"
 
+#define KEY_PAUSE_THRESHOLD 150
+
 KeyboardModule::KeyboardModule(StateManager *stateManager, WiringManager *wiringManager) {
     this->wiringManager = wiringManager;
     this->stateManager = stateManager;
@@ -12,11 +14,20 @@ void KeyboardModule::begin() {
     DefaultTasker.loopEvery(50, [this] {
         char pressed = this->wiringManager->keyboardRead();
 
-        // TODO protection against multiple-catches of single press
+        if (pressed == 0) return;
+
+        if (pressed == lastKey && millis() - lastKeyTime < KEY_PAUSE_THRESHOLD) {
+            // Skipping pressed key - too fast
+            return;
+        }
+
+        Serial.print("Pressed key: ");
+        Serial.println(pressed);
+
+        lastKey = pressed;
+        lastKeyTime = millis();
 
         switch (pressed) {
-            case '\0':
-                return;
             case '*':
                 clean();
                 break;
