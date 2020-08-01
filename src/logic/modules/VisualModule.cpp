@@ -5,8 +5,6 @@ VisualModule::VisualModule(WiringManager *wiringManager) {
 }
 
 void VisualModule::begin() {
-    // TODO init LED
-
     NetworkTasker.loopEvery(100, [this] {
         if (!ended) {
             updateTimeDisplay();
@@ -15,16 +13,16 @@ void VisualModule::begin() {
     });
 }
 
-void VisualModule::updateTime(unsigned int remainingSecs) {
+void VisualModule::updateTime(uint remainingSecs) {
     this->remainingSecs = remainingSecs;
     this->ended = false;
-    Serial.print("Remaining time: ");
-    Serial.print(remainingSecs / 60);
-    Serial.print(":");
-    Serial.println(remainingSecs % 60);
+//    Serial.print("Remaining time: ");
+//    Serial.print(remainingSecs / 60);
+//    Serial.print(":");
+//    Serial.println(remainingSecs % 60);
 }
 
-void VisualModule::updateProgress(unsigned int value) {
+void VisualModule::updateProgress(uint value) {
     this->progress = value;
 }
 

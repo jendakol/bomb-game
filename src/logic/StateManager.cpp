@@ -30,8 +30,7 @@ void StateManager::begin() {
         Serial.println("Loaded answers for keyboard and cables module are not of the same size!");
         return;
     }
-    // krát dva to mělo bejt!!!
-    this->answersNeeded = count;
+    this->answersNeeded = 2 * count;
 
     this->answers.insert(std::make_pair(MODULE_KEYBOARD, keyboardAnswers));
     this->answers.insert(std::make_pair(MODULE_CABLES, cablesAnswers));
@@ -49,38 +48,6 @@ void StateManager::begin() {
     });
 }
 
-int StateManager::getState() {
-    return this->state;
-}
-
-void StateManager::start() {
-    this->started_at = millis();
-    this->state = STATE_RUNNING;
-    this->sendStatusUpdate();
-
-    this->setRemainingTime(TIME_TO_DEFUSE);
-}
-
-void StateManager::defuse() {
-    this->state = STATE_DEFUSED;
-    this->started_at = 0;
-    this->sendStatusUpdate();
-
-    this->setRemainingTime(0);
-    this->visualModule->showDefused();
-    Serial.println("DEFUSED");
-}
-
-void StateManager::explode() {
-    this->state = STATE_EXPLODED;
-    this->started_at = 0;
-    this->sendStatusUpdate();
-
-    this->setRemainingTime(0);
-    this->visualModule->showExploded();
-    Serial.println("EXPLODED");
-}
-
 void StateManager::verify(int module, const String &answer) {
     Serial.print("Verify; module ");
     Serial.print(module);
@@ -88,14 +55,12 @@ void StateManager::verify(int module, const String &answer) {
     Serial.println((String) answer);
 
     if (!answer.equals(getActAnswer(module))) {
-        Serial.println("Bad answer!");
-        // This may cause "explosion":
-        shortenRemainingTime(BAD_ANSWER_PENALIZATION);
+        badAnswer();
     } else {
         Serial.println("Good answer!");
         progress[module]++;
         uint totalProgress = (float) (progress[0] + progress[1]) * 100.0 / (float) this->answersNeeded;
-        Serial.printf("%d answers needed, %d done\n", this->answersNeeded, progress[0] + progress[1]);
+        Serial.printf("%d answers needed, %d done, progress %d %%\n", this->answersNeeded, progress[0] + progress[1], totalProgress);
 
         if (progress[0] + progress[1] == this->answersNeeded) {
             this->defuse();
@@ -105,6 +70,45 @@ void StateManager::verify(int module, const String &answer) {
             ++this->actAnswers[module];
         }
     }
+}
+
+void StateManager::start() {
+    // TODO test multiple starts (restart)
+    this->started_at = millis();
+    this->state = STATE_RUNNING;
+    this->setRemainingTime(TIME_TO_DEFUSE);
+
+    this->sendStatusUpdate();
+}
+
+void StateManager::defuse() {
+    this->state = STATE_DEFUSED;
+    this->started_at = 0;
+    this->setRemainingTime(0);
+
+    this->sendStatusUpdate();
+    this->visualModule->showDefused();
+    Serial.println("DEFUSED");
+}
+
+void StateManager::explode() {
+    this->state = STATE_EXPLODED;
+    this->started_at = 0;
+    this->setRemainingTime(0);
+
+    this->sendStatusUpdate();
+    this->visualModule->showExploded();
+    Serial.println("EXPLODED");
+}
+
+void StateManager::badAnswer() {
+    Serial.println("Bad answer!");
+    // This may cause "explosion":
+    shortenRemainingTime(BAD_ANSWER_PENALIZATION);
+}
+
+int StateManager::getState() const {
+    return this->state;
 }
 
 void StateManager::sendStatusUpdate() {

@@ -16,7 +16,7 @@ public:
 
     void begin();
 
-    int getState();
+    int getState() const;
 
     void start();
 
@@ -28,24 +28,27 @@ public:
 
     String getActAnswer(int module);
 
+    void badAnswer();
+
 private:
     JsonConnector *jsonConnector;
     VisualModule *visualModule;
     int state;
-    unsigned long started_at;
-    unsigned int remainingSecs, answersNeeded;
-    unsigned int progress[2]{0, 0};
+    ulong started_at;
+    uint remainingSecs, answersNeeded;
+    uint progress[2]{0, 0};
     std::mutex mutex_time;
     std::map<int, std::vector<String>> answers;
     std::map<int, std::vector<String>::iterator> actAnswers;
 
     void sendStatusUpdate();
 
-    void setRemainingTime(unsigned int value);
+    void setRemainingTime(uint value);
 
-    unsigned int shortenRemainingTime(int delta);
+    uint shortenRemainingTime(int delta);
 
     std::vector<String> loadJsonItem(DynamicJsonDocument *doc, int module);
+
 };
 
 

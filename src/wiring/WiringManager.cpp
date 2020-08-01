@@ -49,7 +49,7 @@ void WiringManager::begin() {
 
     delay(RING_LED_ANIM_DELAY * 2);
 
-    strip->ClearTo(RgbColor(0,0,0));
+    strip->ClearTo(RgbColor(0, 0, 0));
 
     strip->Show();
 }
@@ -145,8 +145,7 @@ char WiringManager::keyboardRead() {
         const auto value = (pcf.read8() & 0xf0) >> 4;
         int col = 0;
         for (; col <= 3; col++) {
-            auto x = value + (1 << col);
-            if (x == 0xf) break;
+            if (value + (1 << col) == 0xf) break;
         }
 
         if (col > 3) continue;

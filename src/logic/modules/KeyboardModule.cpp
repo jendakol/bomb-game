@@ -12,7 +12,7 @@ void KeyboardModule::begin() {
     clean();
 
     DefaultTasker.loopEvery(10, [this] {
-        handleKeyPress();
+        if (stateManager->getState() == STATE_RUNNING) handleKeyPress();
     });
 }
 
@@ -26,8 +26,8 @@ void KeyboardModule::handleKeyPress() {
         return;
     }
 
-    Serial.print("Pressed key: ");
-    Serial.println(pressed);
+//    Serial.print("Pressed key: ");
+//    Serial.println(pressed);
 
     lastKey = pressed;
     lastKeyTime = millis();
