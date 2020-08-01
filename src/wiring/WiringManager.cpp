@@ -14,11 +14,16 @@ char keyboardKeys[4][4] = {
 
 #define INDEX_KEYBOARD 0
 
+WiringManager::WiringManager() {
+    this->strip = new NeoPixelBrightnessBus<NeoGrbFeature, Neo800KbpsMethod>(LEDS_RING_COUNT, PIN_LED_RING);
+}
+
 void WiringManager::begin() {
     std::lock_guard<std::mutex> lg(mutex);
 
     Wire.begin();
 
+    // init alphanum display:
     selectChannel(CHANNEL_ALPHANUM4);
     alphaNum4.begin(ADDR_ALPHANUM4);
 
@@ -28,7 +33,25 @@ void WiringManager::begin() {
     alphaNum4.writeDigitAscii(3, '-');
     alphaNum4.writeDisplay();
 
+    // for keyboard:
     addPcf(CHANNEL_KEYBOARD, INDEX_KEYBOARD, ADDR_KEYBOARD);
+
+    // init LED ring:
+    strip->Begin();
+    strip->Show();
+    strip->SetBrightness(LEDS_RING_BRIGHTNESS);
+
+    for (int i = 0; i < LEDS_RING_COUNT; i++) {
+        delay(RING_LED_ANIM_DELAY);
+        strip->SetPixelColor(i, RING_COLOR_BLUE);
+        strip->Show();
+    }
+
+    delay(RING_LED_ANIM_DELAY * 2);
+
+    strip->ClearTo(RgbColor(0,0,0));
+
+    strip->Show();
 }
 
 void WiringManager::selectChannel(const uint8_t channel) {

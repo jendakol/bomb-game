@@ -8,39 +8,59 @@ void VisualModule::begin() {
     // TODO init LED
 
     NetworkTasker.loopEvery(100, [this] {
-        updateTimeDisplay();
+        if (!ended) {
+            updateTimeDisplay();
+            updateLedRing();
+        }
     });
 }
 
-void VisualModule::updateTime(unsigned int remaining_secs) {
-    this->remaining_secs = remaining_secs;
+void VisualModule::updateTime(unsigned int remainingSecs) {
+    this->remainingSecs = remainingSecs;
+    this->ended = false;
     Serial.print("Remaining time: ");
-    Serial.print(remaining_secs / 60);
+    Serial.print(remainingSecs / 60);
     Serial.print(":");
-    Serial.println(remaining_secs % 60);
+    Serial.println(remainingSecs % 60);
+}
+
+void VisualModule::updateProgress(unsigned int value) {
+    this->progress = value;
 }
 
 void VisualModule::updateLedRing() {
-    // TODO display the progress - blue for cables, red for keyboard? total 24 LEDs
+    // TODO show progress animation?
+
+    if (progress > 0) {
+        uint leds = (float) LEDS_RING_COUNT * ((float) progress / 100.0);
+        this->wiringManager->strip->ClearTo(RING_COLOR_BLUE, 0, leds - 1);
+        this->wiringManager->strip->Show();
+    }
 }
 
 void VisualModule::updateTimeDisplay() {
-    if (remaining_secs > 0) {
+    if (remainingSecs > 0) {
         char buff[5]{0};
-        sprintf(buff, "%02d%02d", remaining_secs / 60, remaining_secs % 60);
+        sprintf(buff, "%02d%02d", remainingSecs / 60, remainingSecs % 60);
 
         this->wiringManager->alphaNumWrite(buff);
-    } else {
-        this->wiringManager->alphaNumWrite("----");
     }
 }
 
 void VisualModule::showDefused() {
-    // TODO show defused
+    this->ended = true;
+    this->remainingSecs = 0;
+
+    this->wiringManager->alphaNumWrite("--OK");
+    this->wiringManager->strip->ClearTo(RING_COLOR_GREEN);
+    this->wiringManager->strip->Show();
 }
 
 void VisualModule::showExploded() {
-    // TODO show exploded
-}
+    this->ended = true;
+    this->remainingSecs = 0;
 
-// TODO add methods for displaying progress on LED ring - take % as input?
+    this->wiringManager->alphaNumWrite("XXXX");
+    this->wiringManager->strip->ClearTo(RING_COLOR_RED);
+    this->wiringManager->strip->Show();
+}

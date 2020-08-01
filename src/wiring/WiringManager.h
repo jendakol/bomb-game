@@ -6,14 +6,22 @@
 
 #include <PCF8574.h>
 #include "Adafruit_LEDBackpack.h"
+#include <NeoPixelBrightnessBus.h>
 
 #include <Constants.h>
+
+#define RING_LED_ANIM_DELAY 40
+
+#define RING_COLOR_RED RgbColor(255, 0, 0)
+#define RING_COLOR_GREEN RgbColor(0, 255, 0)
+#define RING_COLOR_BLUE RgbColor(0, 0, 255)
 
 typedef std::map<uint8_t, PCF8574> MapInner;
 typedef std::map<uint8_t, MapInner> PcfMap;
 
 class WiringManager {
 public:
+    explicit WiringManager();
     void begin();
 
     void registerPcf(const uint8_t channel, const uint8_t index, uint8_t addr);
@@ -30,12 +38,13 @@ public:
 
     char keyboardRead();
 
-    void selectChannel(const uint8_t channel);
-
+    NeoPixelBrightnessBus<NeoGrbFeature, Neo800KbpsMethod> *strip;
 private:
     std::mutex mutex;
     PcfMap pcfs;
     Adafruit_AlphaNum4 alphaNum4;
+
+    void selectChannel(const uint8_t channel);
 
     void addPcf(const uint8_t channel, const uint8_t index, const uint8_t addr);
 

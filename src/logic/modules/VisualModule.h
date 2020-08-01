@@ -10,7 +10,9 @@ public:
 
     void begin();
 
-    void updateTime(unsigned int remaining_secs);
+    void updateTime(unsigned int remainingSecs);
+
+    void updateProgress(unsigned int value);
 
     void showDefused();
 
@@ -18,7 +20,9 @@ public:
 
 private:
     WiringManager *wiringManager;
-    unsigned int remaining_secs = 0;
+    unsigned int remainingSecs = 0;
+    unsigned int progress = 0;
+    bool ended = false;
 
     void updateLedRing();
 

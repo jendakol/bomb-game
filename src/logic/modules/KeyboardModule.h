@@ -20,6 +20,8 @@ private:
     String pressedKeyBuffer;
     char lastKey = 0;
     unsigned long lastKeyTime = 0;
+
+    void handleKeyPress();
 };
 
 #endif //BOMBA_KEYBOARDMODULE_H

@@ -11,34 +11,38 @@ KeyboardModule::KeyboardModule(StateManager *stateManager, WiringManager *wiring
 void KeyboardModule::begin() {
     clean();
 
-    DefaultTasker.loopEvery(50, [this] {
-        char pressed = this->wiringManager->keyboardRead();
-
-        if (pressed == 0) return;
-
-        if (pressed == lastKey && millis() - lastKeyTime < KEY_PAUSE_THRESHOLD) {
-            // Skipping pressed key - too fast
-            return;
-        }
-
-        Serial.print("Pressed key: ");
-        Serial.println(pressed);
-
-        lastKey = pressed;
-        lastKeyTime = millis();
-
-        switch (pressed) {
-            case '*':
-                clean();
-                break;
-            case '#':
-                this->stateManager->verify(MODULE_KEYBOARD, pressedKeyBuffer);
-                clean();
-                break;
-            default:
-                append(pressed);
-        }
+    DefaultTasker.loopEvery(10, [this] {
+        handleKeyPress();
     });
+}
+
+void KeyboardModule::handleKeyPress() {
+    char pressed = wiringManager->keyboardRead();
+
+    if (pressed == 0) return;
+
+    if (pressed == lastKey && millis() - lastKeyTime < KEY_PAUSE_THRESHOLD) {
+        // Skipping pressed key - too fast
+        return;
+    }
+
+    Serial.print("Pressed key: ");
+    Serial.println(pressed);
+
+    lastKey = pressed;
+    lastKeyTime = millis();
+
+    switch (pressed) {
+        case '*':
+            clean();
+            break;
+        case '#':
+            stateManager->verify(MODULE_KEYBOARD, pressedKeyBuffer);
+            clean();
+            break;
+        default:
+            append(pressed);
+    }
 }
 
 void KeyboardModule::clean() {

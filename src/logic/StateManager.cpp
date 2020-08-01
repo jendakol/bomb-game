@@ -12,31 +12,34 @@ StateManager::StateManager(JsonConnector *jsonConnector, WiringManager *wiringMa
 void StateManager::begin() {
     this->visualModule->begin();
 
-    // TODO Initialize inner counters of puzzles/answers and of progress (reported to visual module).
-
     //load files
     DynamicJsonDocument answersJson(512);
     DynamicJsonDocument puzzlesJson(512);
     DeserializationError err;
     File answersFile = SPIFFS.open(ANSWERS_PATH, FILE_READ);
-    File puzzlesFile = SPIFFS.open(PUZZLES_PATH, FILE_READ);
     err = deserializeJson(answersJson, answersFile);
     if (err) {
         //TODO
     }
-    err = deserializeJson(puzzlesJson, puzzlesFile);
-    if (err) {
-        //TODO
-    }
 
-    this->answers.insert(std::make_pair(MODULE_KEYBOARD, this->loadJsonItem(&answersJson, MODULE_KEYBOARD)));
-    this->answers.insert(std::make_pair(MODULE_CABLES, this->loadJsonItem(&answersJson, MODULE_CABLES)));
+    const std::vector<String> &keyboardAnswers = this->loadJsonItem(&answersJson, MODULE_KEYBOARD);
+    const std::vector<String> &cablesAnswers = this->loadJsonItem(&answersJson, MODULE_CABLES);
+
+    unsigned int count = keyboardAnswers.size();
+    if (count != cablesAnswers.size()) {
+        Serial.println("Loaded answers for keyboard and cables module are not of the same size!");
+        return;
+    }
+    // krát dva to mělo bejt!!!
+    this->answersNeeded = count;
+
+    this->answers.insert(std::make_pair(MODULE_KEYBOARD, keyboardAnswers));
+    this->answers.insert(std::make_pair(MODULE_CABLES, cablesAnswers));
 
     this->actAnswers.insert(std::make_pair(MODULE_KEYBOARD, answers[MODULE_KEYBOARD].begin()));
     this->actAnswers.insert(std::make_pair(MODULE_CABLES, answers[MODULE_CABLES].begin()));
 
     answersFile.close();
-    puzzlesFile.close();
 
     DefaultTasker.loopEvery(1000, [this] {
         if (state == STATE_RUNNING) {
@@ -79,36 +82,33 @@ void StateManager::explode() {
 }
 
 void StateManager::verify(int module, const String &answer) {
-    // TODO Report answer from KeyboardModule and CablesModule. Verify - it's either success or failure. Don't forget to
-    // explode when there's too much of failures. Make constant (Constants.h) for the threshold. Accept info about
-    // completeness of each module and don't forget to switch to DEFUSED state.
-
     Serial.print("Verify; module ");
     Serial.print(module);
     Serial.print(" answer ");
     Serial.println((String) answer);
 
     if (!answer.equals(getActAnswer(module))) {
-        //TODO bad answer
-        Serial.println("Bad answer");
-        // This may cause explosion:
+        Serial.println("Bad answer!");
+        // This may cause "explosion":
         shortenRemainingTime(BAD_ANSWER_PENALIZATION);
     } else {
-        //TODO correct answer
-        Serial.println("Good answer");
-        ++this->actAnswers[module];
-        // TODO defuse, if everything done!
-    }
+        Serial.println("Good answer!");
+        progress[module]++;
+        uint totalProgress = (float) (progress[0] + progress[1]) * 100.0 / (float) this->answersNeeded;
+        Serial.printf("%d answers needed, %d done\n", this->answersNeeded, progress[0] + progress[1]);
 
-    this->visualizeStatus();
+        if (progress[0] + progress[1] == this->answersNeeded) {
+            this->defuse();
+        } else {
+            this->sendStatusUpdate();
+            this->visualModule->updateProgress(totalProgress);
+            ++this->actAnswers[module];
+        }
+    }
 }
 
 void StateManager::sendStatusUpdate() {
     // TODO send json status update
-}
-
-void StateManager::visualizeStatus() {
-    // TODO send progress to VisualModule
 }
 
 String StateManager::getActAnswer(int module) {
@@ -124,25 +124,25 @@ std::vector<String> StateManager::loadJsonItem(DynamicJsonDocument *doc, int mod
 }
 
 unsigned int StateManager::shortenRemainingTime(int delta) {
-    if (this->remaining_secs < delta) {
+    if (this->remainingSecs < delta) {
         this->explode();
     } else {
         std::lock_guard<std::mutex> lg(mutex_time);
 
-        this->remaining_secs -= delta;
-        this->visualModule->updateTime(this->remaining_secs);
+        this->remainingSecs -= delta;
+        this->visualModule->updateTime(this->remainingSecs);
 
         this->sendStatusUpdate();
     }
 
-    return this->remaining_secs;
+    return this->remainingSecs;
 }
 
 void StateManager::setRemainingTime(unsigned int value) {
     std::lock_guard<std::mutex> lg(mutex_time);
 
-    this->remaining_secs = value;
-    this->visualModule->updateTime(this->remaining_secs);
+    this->remainingSecs = value;
+    this->visualModule->updateTime(this->remainingSecs);
     this->sendStatusUpdate();
 }
 
