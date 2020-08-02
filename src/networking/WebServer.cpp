@@ -8,9 +8,7 @@ void WebServer::begin(JsonConnector &jsonConnector) {
     installCaptivePortalRedirects();
 
     webServer->onNotFound([](AsyncWebServerRequest *request) {
-        if (WebServer::handleStaticFile(request)) return;
-
-        request->send(404);
+        WebServer::handleStaticFile(request);
     });
 
     jsonConnector.bind(*webServer);

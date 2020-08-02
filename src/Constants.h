@@ -29,11 +29,10 @@
 #define CHANNEL_KEYBOARD 3
 #define CHANNEL_CABLES 3
 
-#define TIME_TO_DEFUSE 6 * 60 + 15
+#define TIME_TO_DEFUSE 60 * 60 + 15
 #define BAD_ANSWER_PENALIZATION 5 * 60
 
-#define PUZZLES_PATH "/puzzles/puzzles.json"
-#define ANSWERS_PATH "/puzzles/answers.json"
+#define ANSWERS_PATH "/answers.json"
 
 #define MODULE_KEYBOARD 0
 #define MODULE_CABLES 1

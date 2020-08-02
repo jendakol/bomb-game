@@ -30,6 +30,7 @@ void VisualModule::updateLedRing() {
     // TODO show progress animation?
 
     if (progress > 0) {
+        this->wiringManager->strip->ClearTo(RING_COLOR_NONE);
         uint leds = (float) LEDS_RING_COUNT * ((float) progress / 100.0);
         this->wiringManager->strip->ClearTo(RING_COLOR_BLUE, 0, leds - 1);
         this->wiringManager->strip->Show();
@@ -61,4 +62,13 @@ void VisualModule::showExploded() {
     this->wiringManager->alphaNumWrite("XXXX");
     this->wiringManager->strip->ClearTo(RING_COLOR_RED);
     this->wiringManager->strip->Show();
+}
+
+void VisualModule::reset() {
+    this->ended = true;
+    this->remainingSecs = 0;
+    this->progress = 0;
+
+    this->wiringManager->alphaNumWrite("----");
+    this->wiringManager->strip->ClearTo(RING_COLOR_NONE);
 }

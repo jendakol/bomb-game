@@ -21,7 +21,9 @@ void JsonConnector::onWsEvent(AwsEventType type, uint8_t *data, size_t len) {
     } else if (type == WS_EVT_DISCONNECT) {
         Serial.println(F("Websocket client disconnected"));
     } else if (type == WS_EVT_DATA) {
-        Serial.print(F("Websocket data received: "));
+//        Serial.print(F("Websocket data received: "));
+//        auto command = new String((const char *)data);
+//        Serial.println(*command);
 
         StaticJsonDocument<1024> json;
         deserializeJson(json, data, len);

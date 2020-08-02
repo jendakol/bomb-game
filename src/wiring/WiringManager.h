@@ -15,6 +15,7 @@
 #define RING_COLOR_RED RgbColor(255, 0, 0)
 #define RING_COLOR_GREEN RgbColor(0, 255, 0)
 #define RING_COLOR_BLUE RgbColor(0, 0, 255)
+#define RING_COLOR_NONE RgbColor(0, 0, 0)
 
 typedef std::map<uint8_t, PCF8574> MapInner;
 typedef std::map<uint8_t, MapInner> PcfMap;

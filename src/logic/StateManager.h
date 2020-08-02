@@ -8,7 +8,7 @@
 #define STATE_STARTED 0
 #define STATE_RUNNING 1
 #define STATE_DEFUSED 2
-#define STATE_EXPLODED 2
+#define STATE_EXPLODED 3
 
 class StateManager {
 public:
@@ -33,7 +33,7 @@ public:
 private:
     JsonConnector *jsonConnector;
     VisualModule *visualModule;
-    int state;
+    int state = STATE_STARTED;
     ulong started_at;
     uint remainingSecs, answersNeeded;
     uint progress[2]{0, 0};
@@ -49,6 +49,9 @@ private:
 
     std::vector<String> loadJsonItem(DynamicJsonDocument *doc, int module);
 
+    void receiveCommand(const JsonDocument &json);
+
+    void goodAnswer(int module);
 };
 
 

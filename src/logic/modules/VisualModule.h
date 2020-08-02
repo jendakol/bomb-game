@@ -18,6 +18,8 @@ public:
 
     void showExploded();
 
+    void reset();
+
 private:
     WiringManager *wiringManager;
     uint remainingSecs = 0;

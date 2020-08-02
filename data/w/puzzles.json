@@ -1,0 +1,24 @@
+{
+  "cables": {
+    "intro": "úvod dráty",
+    "puzzles": [
+      {
+        "text": "1C Lorem ipsun dolor sit amet"
+      },
+      {
+        "text": "2C Lorem ipsun dolor sit amet"
+      }
+    ]
+  },
+  "keyboard": {
+    "intro": "úvod čísla",
+    "puzzles": [
+      {
+        "text": "1K Lorem ipsun dolor sit amet"
+      },
+      {
+        "text": "2K Lorem ipsun dolor sit amet"
+      }
+    ]
+  }
+}

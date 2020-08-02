@@ -46,6 +46,10 @@ void StateManager::begin() {
             if (rem == 0) this->explode();
         }
     });
+
+    jsonConnector->subscribe([this](const JsonDocument &json) {
+        receiveCommand(json);
+    });
 }
 
 void StateManager::verify(int module, const String &answer) {
@@ -57,24 +61,17 @@ void StateManager::verify(int module, const String &answer) {
     if (!answer.equals(getActAnswer(module))) {
         badAnswer();
     } else {
-        Serial.println("Good answer!");
-        progress[module]++;
-        uint totalProgress = (float) (progress[0] + progress[1]) * 100.0 / (float) this->answersNeeded;
-        Serial.printf("%d answers needed, %d done, progress %d %%\n", this->answersNeeded, progress[0] + progress[1], totalProgress);
-
-        if (progress[0] + progress[1] == this->answersNeeded) {
-            this->defuse();
-        } else {
-            this->sendStatusUpdate();
-            this->visualModule->updateProgress(totalProgress);
-            ++this->actAnswers[module];
-        }
+        goodAnswer(module);
     }
 }
 
 void StateManager::start() {
-    // TODO test multiple starts (restart)
     this->started_at = millis();
+    this->progress[0] = 0;
+    this->progress[1] = 0;
+    this->actAnswers[MODULE_KEYBOARD] = answers[MODULE_KEYBOARD].begin();
+    this->actAnswers[MODULE_CABLES] = answers[MODULE_CABLES].begin();
+    visualModule->reset();
     this->state = STATE_RUNNING;
     this->setRemainingTime(TIME_TO_DEFUSE);
 
@@ -107,12 +104,52 @@ void StateManager::badAnswer() {
     shortenRemainingTime(BAD_ANSWER_PENALIZATION);
 }
 
+void StateManager::goodAnswer(int module) {
+    Serial.println("Good answer!");
+    progress[module]++;
+
+    uint totalProgress = (float) (progress[0] + progress[1]) * 100.0 / (float) answersNeeded;
+    Serial.printf("%d answers needed, %d done, progress %d %%\n", answersNeeded, progress[0] + progress[1], totalProgress);
+
+    if (progress[0] + progress[1] == answersNeeded) {
+        defuse();
+    } else {
+        sendStatusUpdate();
+        visualModule->updateProgress(totalProgress);
+        ++actAnswers[module];
+    }
+}
+
 int StateManager::getState() const {
     return this->state;
 }
 
 void StateManager::sendStatusUpdate() {
-    // TODO send json status update
+    StaticJsonDocument<1024> json;
+
+    json["status"] = this->getState();
+    json["remainingSecs"] = this->remainingSecs;
+    json["progress0"] = this->progress[0];
+    json["progress1"] = this->progress[1];
+
+    this->jsonConnector->send(json);
+}
+
+void StateManager::receiveCommand(const JsonDocument &json) {
+    auto command = json["command"].as<char *>();
+
+    Serial.print("Command received: ");
+    Serial.println(command);
+
+    if (strcmp(command, "start") == 0) {
+        start();
+    } else if (strcmp(command, "setTime") == 0) {
+        setRemainingTime(json["time"].as<uint>());
+    } else if (strcmp(command, "defuse") == 0) {
+        defuse();
+    } else if (strcmp(command, "explode") == 0) {
+        explode();
+    }
 }
 
 String StateManager::getActAnswer(int module) {
