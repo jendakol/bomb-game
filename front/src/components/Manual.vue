@@ -2,13 +2,16 @@
     <v-container width="1000" outlined raised fill-height>
         <v-row>
             <v-container fluid>
-                <v-card class="pa-5">
+                <v-card class="pa-5"  v-bind:style="[(getProgress() + 1 >= this.pagiPage) && this.pagiPage !== 1 ? {'background': '#4CAF50'} : {}]">
                     <v-card-title>{{this.moduleNames[this.$route.params.moduleName]}}</v-card-title>
                     <v-card-text v-if="this.pagiPage === 1">
                         {{ this.puzzleModule.intro }}
                     </v-card-text>
                     <v-card-text v-else>
-                        {{ this.puzzleModule.puzzles[this.pagiPage - 2] }}
+                        <h2 v-if="this.puzzleModule.puzzles[this.pagiPage - 2].header">
+                            {{ this.puzzleModule.puzzles[this.pagiPage - 2].header }}
+                        </h2>
+                        {{ this.puzzleModule.puzzles[this.pagiPage - 2].text }}
                     </v-card-text>
                 </v-card>
             </v-container>
@@ -40,6 +43,15 @@
         methods: {
             changePage: function () {
                 this.$router.push({name: 'Manual', params: {'moduleName': this.$route.params.moduleName, 'page': this.pagiPage}});
+            },
+            getProgress: function () {
+              if(this.$route.params.moduleName === "cables"){
+                return this.$store.getters.bombState.progress1;
+              }
+
+              if(this.$route.params.moduleName === "keyboard"){
+                return this.$store.getters.bombState.progress0;
+              }
             }
         },
         computed: {
