@@ -46,11 +46,11 @@
             },
             getProgress: function () {
               if(this.$route.params.moduleName === "cables"){
-                return this.$store.getters.bombState.progress1;
+                return this.bombState.progress1;
               }
 
               if(this.$route.params.moduleName === "keyboard"){
-                return this.$store.getters.bombState.progress0;
+                return this.bombState.progress0;
               }
             }
         },
