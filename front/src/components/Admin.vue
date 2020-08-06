@@ -42,16 +42,16 @@
             </v-col>
             <v-col cols="2"></v-col>
         </v-row>
-        <v-row>
-            <v-col cols="2"></v-col>
+        <v-row justify="space-around">
+<!--            <v-col cols="2"></v-col>-->
             <v-col cols="8">
-                <v-text-field
-                        label="Time"
-                        v-model="timeSecs"
-                        type="number"/>
-                <v-btn width="100%" @click="updateTime">Set time</v-btn>
+              <v-time-picker v-model="timer"
+                             format="24hr"
+                             :use-seconds="true"
+                             :full-width="true"
+                             v-on:click:second="updateTime"
+              ></v-time-picker>
             </v-col>
-            <v-col cols="2"></v-col>
         </v-row>
     </v-container>
 </template>
@@ -61,7 +61,8 @@
         name: 'Admin',
         data() {
             return {
-                timeSecs: 0
+                timeSecs: 0,
+                timer: null
             }
         },
         methods: {
@@ -70,13 +71,15 @@
                 this.ws.send(JSON.stringify(json));
             },
             updateTime: function () {
-                console.log(this.timeSecs)
+                let parsedTime = this.timer.split(':');
+                this.timeSecs = (parseInt(parsedTime[0]) * 3600) + (parseInt(parsedTime[1]) * 60) + parseInt(parsedTime[2]);
+                console.log(this.timeSecs);
                 this.sendCommand('setTime', {time: this.timeSecs})
             },
             restartWs: function () {
                 this.disconnect()
                 this.restartConnection()
-            }
+            },
         },
         computed: {
             status: {
