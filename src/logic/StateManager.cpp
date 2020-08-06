@@ -14,12 +14,12 @@ void StateManager::begin() {
 
     //load files
     DynamicJsonDocument answersJson(512);
-    DynamicJsonDocument puzzlesJson(512);
     DeserializationError err;
     File answersFile = SPIFFS.open(ANSWERS_PATH, FILE_READ);
     err = deserializeJson(answersJson, answersFile);
     if (err) {
         //TODO
+        Serial.println("ERR loading answers JSON!");
     }
 
     const std::vector<String> &keyboardAnswers = this->loadJsonItem(&answersJson, MODULE_KEYBOARD);
@@ -67,13 +67,16 @@ void StateManager::verify(int module, const String &answer) {
 
 void StateManager::start() {
     this->started_at = millis();
-    this->progress[0] = 0;
-    this->progress[1] = 0;
+    this->totalAnswered = 0;
+//    this->progress[0] = 0;
+//    this->progress[1] = 0;
+
     this->actAnswers[MODULE_KEYBOARD] = answers[MODULE_KEYBOARD].begin();
     this->actAnswers[MODULE_CABLES] = answers[MODULE_CABLES].begin();
+//    ++actAnswers[MODULE_CABLES];
     visualModule->reset();
     this->state = STATE_RUNNING;
-    this->setRemainingTime(TIME_TO_DEFUSE);
+//    this->setRemainingTime(TIME_TO_DEFUSE);
 
     this->sendStatusUpdate();
 }
@@ -106,12 +109,16 @@ void StateManager::badAnswer() {
 
 void StateManager::goodAnswer(int module) {
     Serial.println("Good answer!");
-    progress[module]++;
+//    progress[module]++;
 
-    uint totalProgress = (float) (progress[0] + progress[1]) * 100.0 / (float) answersNeeded;
-    Serial.printf("%d answers needed, %d done, progress %d %%\n", answersNeeded, progress[0] + progress[1], totalProgress);
+    totalAnswered++;
 
-    if (progress[0] + progress[1] == answersNeeded) {
+//    uint totalProgress = (float) (progress[0] + progress[1]) * 100.0 / (float) answersNeeded;
+    uint totalProgress = (float) (totalAnswered) * 100.0 / (float) answersNeeded;
+    Serial.printf("%d answers needed, %d done, progress %d %%\n", answersNeeded, totalAnswered,
+                  totalProgress);
+
+    if (totalAnswered == answersNeeded) {
         defuse();
     } else {
         sendStatusUpdate();
@@ -129,8 +136,11 @@ void StateManager::sendStatusUpdate() {
 
     json["status"] = this->getState();
     json["remainingSecs"] = this->remainingSecs;
-    json["progress0"] = this->progress[0];
-    json["progress1"] = this->progress[1];
+
+    for (auto &answer : answers) {
+        String progressName = "progress" + (String) answer.first;
+        json[progressName] = actAnswers[answer.first] - answer.second.begin();
+    }
 
     this->jsonConnector->send(json);
 }
@@ -149,6 +159,10 @@ void StateManager::receiveCommand(const JsonDocument &json) {
         defuse();
     } else if (strcmp(command, "explode") == 0) {
         explode();
+    } else if (strcmp(command, "progress") == 0) {
+        Serial.println(json["value"].as<String>());
+        Serial.println(json["module"].as<String>());
+        actAnswers[json["module"].as<int>()] = answers[json["module"].as<int>()].begin() + json["value"].as<int>();
     }
 }
 
