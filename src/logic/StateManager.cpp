@@ -111,20 +111,11 @@ void StateManager::goodAnswer(int module) {
     Serial.println("Good answer!");
 //    progress[module]++;
 
-    totalAnswered++;
+    ++totalAnswered;
+    ++actAnswers[module];
 
 //    uint totalProgress = (float) (progress[0] + progress[1]) * 100.0 / (float) answersNeeded;
-    uint totalProgress = (float) (totalAnswered) * 100.0 / (float) answersNeeded;
-    Serial.printf("%d answers needed, %d done, progress %d %%\n", answersNeeded, totalAnswered,
-                  totalProgress);
-
-    if (totalAnswered == answersNeeded) {
-        defuse();
-    } else {
-        sendStatusUpdate();
-        visualModule->updateProgress(totalProgress);
-        ++actAnswers[module];
-    }
+    evaluateActProgress();
 }
 
 int StateManager::getState() const {
@@ -160,10 +151,12 @@ void StateManager::receiveCommand(const JsonDocument &json) {
     } else if (strcmp(command, "explode") == 0) {
         explode();
     } else if (strcmp(command, "progress") == 0) {
-        Serial.println(json["value"].as<String>());
-        Serial.println(json["module"].as<String>());
+        totalAnswered -= getCountOfAnswered(json["module"].as<int>());
+        totalAnswered += json["value"].as<int>();
         actAnswers[json["module"].as<int>()] = answers[json["module"].as<int>()].begin() + json["value"].as<int>();
+        evaluateActProgress();
     }
+
 }
 
 String StateManager::getActAnswer(int module) {
@@ -199,6 +192,23 @@ void StateManager::setRemainingTime(unsigned int value) {
     this->remainingSecs = value;
     this->visualModule->updateTime(this->remainingSecs);
     this->sendStatusUpdate();
+}
+
+int StateManager::getCountOfAnswered(int module) {
+    return actAnswers[module] - answers[module].begin();
+}
+
+void StateManager::evaluateActProgress() {
+    uint totalProgress = (float) (totalAnswered) * 100.0 / (float) answersNeeded;
+    Serial.printf("%d answers needed, %d done, progress %d %%\n", answersNeeded, totalAnswered,
+                  totalProgress);
+
+    if (totalAnswered == answersNeeded) {
+        defuse();
+    } else {
+        sendStatusUpdate();
+        visualModule->updateProgress(totalProgress);
+    }
 }
 
 

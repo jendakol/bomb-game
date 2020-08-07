@@ -28,6 +28,8 @@ public:
 
     String getActAnswer(int module);
 
+    int getCountOfAnswered(int module);
+
     void badAnswer();
 
 private:
@@ -52,6 +54,8 @@ private:
     void receiveCommand(const JsonDocument &json);
 
     void goodAnswer(int module);
+
+    void evaluateActProgress();
 };
 
 
