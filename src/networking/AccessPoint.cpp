@@ -9,7 +9,7 @@ void AccessPoint::begin(const char *ssid, const char *password) {
     IPAddress apIP(8, 8, 8, 8);
     IPAddress netMsk(255, 255, 255, 0);
 
-    Serial.print(F("Configuring access point…"));
+    Serial.print(F("Configuring access point...\n"));
     WiFi.softAPConfig(apIP, apIP, netMsk);
     WiFi.softAP(ssid, password);
 

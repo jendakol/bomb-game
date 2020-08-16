@@ -3,7 +3,7 @@
 
 #include <wiring/WiringManager.h>
 
-#define NO_CABLE 8
+#define NO_CABLE 6
 
 class CablesModule {
 public:

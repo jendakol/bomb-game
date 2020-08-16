@@ -1,7 +1,7 @@
 #include <logic/StateManager.h>
 #include "KeyboardModule.h"
 
-#define KEY_PAUSE_THRESHOLD 150
+#define KEY_PAUSE_THRESHOLD 200
 
 KeyboardModule::KeyboardModule(StateManager *stateManager, WiringManager *wiringManager) {
     this->wiringManager = wiringManager;
@@ -12,7 +12,8 @@ void KeyboardModule::begin() {
     clean();
 
     DefaultTasker.loopEvery(10, [this] {
-        if (stateManager->getState() == STATE_RUNNING) handleKeyPress();
+        if (stateManager->getState() == STATE_RUNNING)
+            handleKeyPress();
     });
 }
 

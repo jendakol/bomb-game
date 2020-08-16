@@ -3,7 +3,7 @@
 #include <Constants.h>
 #include <networking/WebServer.h>
 #include <networking/JsonConnector.h>
-#include <networking/WifiClient.h>
+#include <networking/AccessPoint.h>
 
 #include <logic/StateManager.h>
 #include <logic/ModulesManager.h>
@@ -24,16 +24,9 @@ void setup() {
     modulesManager.begin();
 
     NetworkTasker.once([] {
-        WifiClient::begin(WIFI_SSID, WIFI_PASSWORD);
+        AccessPoint::begin(WIFI_SSID, WIFI_PASSWORD);
         webServer.begin(jsonConnector);
     });
-
-//    // TODO handle by web UI:
-//    DefaultTasker.once([] {
-//        vTaskDelay(3000 / portTICK_PERIOD_MS);
-//
-//        stateManager.start();
-//    });
 }
 
 void loop() {

@@ -17,6 +17,7 @@ void WebServer::begin(JsonConnector &jsonConnector) {
 }
 
 void WebServer::installCaptivePortalRedirects() {
+    webServer->addRewrite(new AsyncWebRewrite("/home", "/index.html"));
     webServer->addRewrite(new AsyncWebRewrite("/generate_204", "/index.html"));
     webServer->addRewrite(new AsyncWebRewrite("/gen_204", "/index.html"));
     webServer->addRewrite(new AsyncWebRewrite("/fwlink", "/index.html"));

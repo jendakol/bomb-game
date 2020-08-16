@@ -100,12 +100,12 @@ void WiringManager::addPcf(const uint8_t channel, const uint8_t index, const uin
     PCF8574 pcf(addr);
     pcf.begin();
 
-    Serial.print("Adding new PCF: channel=");
-    Serial.print(channel);
-    Serial.print(" index=");
-    Serial.print(index);
-    Serial.print(" addr=");
-    Serial.println(addr, HEX);
+//    Serial.print("Adding new PCF: channel=");
+//    Serial.print(channel);
+//    Serial.print(" index=");
+//    Serial.print(index);
+//    Serial.print(" addr=");
+//    Serial.println(addr, HEX);
 
     if (pcfs.count(channel) == 0) {
         pcfs.emplace(channel, MapInner{});

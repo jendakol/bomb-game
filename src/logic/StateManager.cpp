@@ -66,17 +66,17 @@ void StateManager::verify(int module, const String &answer) {
 }
 
 void StateManager::start() {
-    this->started_at = millis();
-    this->totalAnswered = 0;
-//    this->progress[0] = 0;
-//    this->progress[1] = 0;
+    { // to limit mutex lock validity
+        std::lock_guard<std::mutex> lg(mutex_progress);
 
-    this->actAnswers[MODULE_KEYBOARD] = answers[MODULE_KEYBOARD].begin();
-    this->actAnswers[MODULE_CABLES] = answers[MODULE_CABLES].begin();
-//    ++actAnswers[MODULE_CABLES];
+        this->started_at = millis();
+        this->totalAnswered = 0;
+
+        this->actAnswers[MODULE_KEYBOARD] = answers[MODULE_KEYBOARD].begin();
+        this->actAnswers[MODULE_CABLES] = answers[MODULE_CABLES].begin();
+    }
     visualModule->reset();
     this->state = STATE_RUNNING;
-//    this->setRemainingTime(TIME_TO_DEFUSE);
 
     this->sendStatusUpdate();
 }
@@ -109,12 +109,12 @@ void StateManager::badAnswer() {
 
 void StateManager::goodAnswer(int module) {
     Serial.println("Good answer!");
-//    progress[module]++;
+
+    std::lock_guard<std::mutex> lg(mutex_progress);
 
     ++totalAnswered;
     ++actAnswers[module];
 
-//    uint totalProgress = (float) (progress[0] + progress[1]) * 100.0 / (float) answersNeeded;
     evaluateActProgress();
 }
 
@@ -143,6 +143,7 @@ void StateManager::receiveCommand(const JsonDocument &json) {
     Serial.println(command);
 
     if (strcmp(command, "start") == 0) {
+        setRemainingTime(json["time"].as<uint>());
         start();
     } else if (strcmp(command, "setTime") == 0) {
         setRemainingTime(json["time"].as<uint>());
@@ -151,9 +152,19 @@ void StateManager::receiveCommand(const JsonDocument &json) {
     } else if (strcmp(command, "explode") == 0) {
         explode();
     } else if (strcmp(command, "progress") == 0) {
-        totalAnswered -= getCountOfAnswered(json["module"].as<int>());
-        totalAnswered += json["value"].as<int>();
-        actAnswers[json["module"].as<int>()] = answers[json["module"].as<int>()].begin() + json["value"].as<int>();
+        int value = json["value"].as<int>();
+        int moduleId = json["module"].as<int>();
+
+        Serial.printf("Manual progress update: %s -> %d\n", MODULE_NAME_MAPPING[moduleId].c_str(), value);
+
+        { // to limit mutex lock validity
+            std::lock_guard<std::mutex> lg(mutex_progress);
+
+            totalAnswered -= getCountOfAnswered(moduleId);
+            actAnswers[moduleId] = answers[moduleId].begin() + value;
+            totalAnswered += getCountOfAnswered(moduleId);
+        }
+
         evaluateActProgress();
     }
 

@@ -8,8 +8,8 @@
 
 #include "Tasker.h"
 
-#define WIFI_SSID "Hrosinec"
-#define WIFI_PASSWORD "hrochLupinek"
+#define WIFI_SSID "bomba"
+#define WIFI_PASSWORD "12345678"
 
 #define STATIC_FILES_PREFIX "/w"
 #define HTTP_PORT 80
@@ -23,10 +23,10 @@
 #define ADDR_MULTIPLEXER 0x70
 #define ADDR_ALPHANUM4 0x71
 #define ADDR_KEYBOARD 0x20
-#define ADDR_CABLES 0x21
+#define ADDR_CABLES 0x20
 
 #define CHANNEL_ALPHANUM4 6
-#define CHANNEL_KEYBOARD 3
+#define CHANNEL_KEYBOARD 0
 #define CHANNEL_CABLES 3
 
 #define TIME_TO_DEFUSE 60 * 60 + 15

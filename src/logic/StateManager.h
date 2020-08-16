@@ -40,6 +40,7 @@ private:
     uint remainingSecs = TIME_TO_DEFUSE, answersNeeded, totalAnswered;
 //    uint progress[2]{0, 0};
     std::mutex mutex_time;
+    std::mutex mutex_progress;
     std::map<int, std::vector<String>> answers;
     std::map<int, std::vector<String>::iterator> actAnswers;
 
