@@ -47,7 +47,7 @@ let GlobalFunctions = {
 
             this.ws.onerror = (err) => {
                 this.connected = false;
-                console.log("WS error: " + err);
+                console.log("WS error: " + JSON.stringify(err));
                 this.restartConnection()
             };
 
@@ -131,7 +131,7 @@ let GlobalFunctions = {
                 if (secs > 0) {
                     let mins = Math.floor(secs / 60);
                     secs = secs % 60;
-                    return mins.toString().padStart(2, "0") + ":" + secs.toString().padStart(2, "0")
+                    return "00:" + mins.toString().padStart(2, "0") + ":" + secs.toString().padStart(2, "0")
                 } else {
                     return "--:--";
                 }
