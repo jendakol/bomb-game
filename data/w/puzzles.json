@@ -7,6 +7,13 @@
       },
       {
         "text": "2C Lorem ipsun dolor sit amet"
+      },
+      {
+        "text": "Která barva není barvou duhy?"
+      },
+      {
+        "text": "Do barevných políček doplňte číslice tak, aby výrazy dávaly dobrý smysl. Odpověď poté zadejte pomocí drátů počínaje od barvy, která je nahrazena nejvyšší číslicí.",
+        "image": "barvy.png"
       }
     ]
   },
@@ -18,6 +25,16 @@
       },
       {
         "text": "2K Lorem ipsun dolor sit amet"
+      },
+      {
+        "text": "V JZD Stvolínky je potřeba okovat koně. Ve stájích je rušno a líným soudruhům se nechce počítat, kolik je ve stájích koní. Kromě nich se tam totiž pohybují i lidé, kteří se o ně starají. První soudruh ležící na seně spočítal, že aktuálně je ve stájích 72 nohou. Druhý, sedící na stropním trámu napočítal 22 hlav. Kolik podkov je potřeba připravit, aby vystačily na všechna kopyta?"
+      },
+      {
+        "text": "Jaký je kód k zámku?\n\nČerná tečka \t- některé číslo je správné i na správném místě.\n\nBílá tečka \t- některé číslo je správné, ale na špatném místě.",
+        "image": "lock.png"
+      },
+      {
+        "text": "Zde leží Abram, jaký to div,\nalgebra poví, jak dlouho byl živ:\nBůh dal mu dětský věk šestinu žití,\ndvanáctinu pak, než vousy mohl míti.\nPo další sedmině svou ženu si vzal,\na za pět let otcem syna se stal.\nAch, ubohé to dítě mudrce a pána!\nŽil dvakrát míň než otec a už mu zvoní hrana!\nJeště čtyři léta do čísel se nořil,\nnež i jeho čas se konečně završil.\n\nJakého věku se dožil Abram.\n"
       }
     ]
   }
