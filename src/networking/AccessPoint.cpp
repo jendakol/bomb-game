@@ -25,6 +25,15 @@ void AccessPoint::begin(const char *ssid, const char *password) {
     });
 
     delay(500);
-    Serial.print(F("AP IP address: "));
-    Serial.println(WiFi.softAPIP());
+    Serial.println("AP ready");
+}
+
+String AccessPoint::serialNumberForMac() {
+    Serial.printf("Mac address: %s\n", WiFi.macAddress().c_str());
+
+    if ((String) "24:6F:28:81:57:FC" == WiFi.macAddress()) {
+        return "23456789";
+    } else {
+        return "12345678";
+    }
 }
