@@ -25,12 +25,7 @@ void StateManager::begin() {
     const std::vector<String> &keyboardAnswers = this->loadJsonItem(&answersJson, MODULE_KEYBOARD);
     const std::vector<String> &cablesAnswers = this->loadJsonItem(&answersJson, MODULE_CABLES);
 
-    unsigned int count = keyboardAnswers.size();
-    if (count != cablesAnswers.size()) {
-        Serial.println("Loaded answers for keyboard and cables module are not of the same size!");
-        return;
-    }
-    this->answersNeeded = 2 * count;
+    this->answersNeeded = keyboardAnswers.size() + cablesAnswers.size();
 
     this->answers.insert(std::make_pair(MODULE_KEYBOARD, keyboardAnswers));
     this->answers.insert(std::make_pair(MODULE_CABLES, cablesAnswers));
@@ -53,10 +48,7 @@ void StateManager::begin() {
 }
 
 void StateManager::verify(int module, const String &answer) {
-    Serial.print("Verify; module ");
-    Serial.print(module);
-    Serial.print(" answer ");
-    Serial.println((String) answer);
+    Serial.printf("Verify: module %d, answer '%s'\n", module, answer.c_str());
 
     if (!answer.equals(getActAnswer(module))) {
         badAnswer();
