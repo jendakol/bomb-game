@@ -1,13 +1,7 @@
 {
   "cables": {
-    "intro": "úvod dráty",
+    "intro": "Drátový modul sestává z 5 drátů s různobarevnými konektory. Pro zneškodnění bomby je potřeba vypojovat a znovu zapojovat konektory v určeném pořadí. Vždy musí být vypojen pouze maximálně jeden konektor - pokud dojde k vypojení dvou a více současně, dojde k okamžitému výbuchu! Postupujte dle jednotlivých kroků a vždy vypojte a zapojte příslušný konektor. Jednotlivé kroky je potřeba provádět resp. zadávat postupně. Vypojení špatného konektoru vyústí v odečtení 5 minut ze zbytkového času a krok je potřeba opakovat.",
     "puzzles": [
-      {
-        "text": "1C Lorem ipsun dolor sit amet"
-      },
-      {
-        "text": "2C Lorem ipsun dolor sit amet"
-      },
       {
         "text": "Která barva není barvou duhy?"
       },
@@ -18,13 +12,10 @@
     ]
   },
   "keyboard": {
-    "intro": "úvod čísla",
+    "intro": "Na číselném modulu je potřeba zadávat v určeném pořadí číselné kódy. Kód se zadává stiskem tlačítek s číslem nebo písmenem, znak # slouží k potvrzení, znak * slouží ke smazání doposud zadaného kódu. Postupujte dle jednotlivých kroků. Kroky je potřeba provádět resp. zadávat postupně. Zadání špatného kódu vyústí v odečtení 5 minut ze zbytkového času a krok je potřeba opakovat.",
     "puzzles": [
       {
-        "text": "1K Lorem ipsun dolor sit amet"
-      },
-      {
-        "text": "2K Lorem ipsun dolor sit amet"
+        "text": "V ulici bydlí vysoko postavení komunističtí politici. Každý má svůj automobil, své telefonní číslo, funkci ve straně a jinou barvu fasády. Zjistěte (a zadejte) telefonní číslo na prezidenta, jestliže víte následující:\n<ul><li>Wartburg parkuje vedle domu, ve kterém bydlí Vlad.</li><li>Iosif jezdí maluchem.</li><li>Telefonní číslo do domu, u kterého parkuje wartburg je 38120.</li><li>Gleb je předseda Ústřední kontrolní a revizní komise Komunistické strany Československa.</li><li>Tajemník ÚV KSČ bydlí napravo od prezidenta.</li><li>Gleb jezdí škodou.</li><li>Modrý dům je vlevo od černého.</li><li>Oleg má telefonní číslo 51988.</li><li>Náměstek jezdí tatrou.</li><li>Gleb má telefonní číslo 56190.</li><li>Vedle domu, ve kterém bydlí Nikita, parkuje maluch.</li><li>Žlutý dům obývá ministr vnitřního obchodu.</li><li>Nikita je pravý soused Iosifa.</li><li>Tatra a lada parkují vedle sebe.</li><li>Vlad bydlí v zeleném domě.</li><li>Telefonní číslo 73434 má dům vlevo od domu, do kterého se dovoláte pod číslem 38120.</li><li>Tajemník bydlí v červeném domě.</li><li>Vlad má telefonní číslo 41632.</li><li>Prezident bydlí vedle domu, u kterého parkuje wartburg.</li></ul>"
       },
       {
         "text": "V JZD Stvolínky je potřeba okovat koně. Ve stájích je rušno a líným soudruhům se nechce počítat, kolik je ve stájích koní. Kromě nich se tam totiž pohybují i lidé, kteří se o ně starají. První soudruh ležící na seně spočítal, že aktuálně je ve stájích 72 nohou. Druhý, sedící na stropním trámu napočítal 22 hlav. Kolik podkov je potřeba připravit, aby vystačily na všechna kopyta?"
