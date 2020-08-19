@@ -3,7 +3,6 @@ import axios from "axios";
 let GlobalFunctions = {
     mounted: function () {
         this.$vuetify.theme.dark = true
-        this.isManualSelected = true
     },
     data() {
         return {

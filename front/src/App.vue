@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <ManualSelect v-if="!this.isManualSelected"/>
+        <ManualSelect v-if="!this.isManualSelected && this.$route !==undefined && this.$route.name !== 'Admin'"/>
         <MainApp v-else/>
 
         <vue-snotify/>
@@ -9,24 +9,24 @@
 </template>
 
 <style lang="sass">
-    @import 'fonts.css'
-    /*@import '../node_modules/material-design-icons/iconfont/material-icons.css'*/
+@import 'fonts.css'
+/*@import '../node_modules/material-design-icons/iconfont/material-icons.css'*/
 </style>
 
 <script>
-    import ManualSelect from './components/ManualSelect.vue';
-    import MainApp from './components/MainApp.vue';
+import ManualSelect from './components/ManualSelect.vue';
+import MainApp from './components/MainApp.vue';
 
-    export default {
-        components: {
-            MainApp,
-            ManualSelect
-        },
-        mounted() {
-        },
-        data() {
-            return {}
-        },
-        methods: {},
-    }
+export default {
+    components: {
+        MainApp,
+        ManualSelect
+    },
+    mounted() {
+    },
+    data() {
+        return {}
+    },
+    methods: {},
+}
 </script>

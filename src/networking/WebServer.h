@@ -22,7 +22,7 @@ private:
     static void handleStaticFile(AsyncWebServerRequest *request) {
         String path = STATIC_FILES_PREFIX + request->url();
 
-        // Serial.printf("Requested URL: %s\n", request->url().c_str());
+         Serial.printf("Requested URL: %s\n", request->url().c_str());
 
         if (path.endsWith("/")) path += F("index.html");
 
