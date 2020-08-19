@@ -1,7 +1,7 @@
 #include <logic/StateManager.h>
 #include "KeyboardModule.h"
 
-#define KEY_PAUSE_THRESHOLD 200
+#define KEY_PAUSE_THRESHOLD 30
 
 KeyboardModule::KeyboardModule(StateManager *stateManager, WiringManager *wiringManager) {
     this->wiringManager = wiringManager;
@@ -18,31 +18,49 @@ void KeyboardModule::begin() {
 }
 
 void KeyboardModule::handleKeyPress() {
-    char pressed = wiringManager->keyboardRead();
+    char current = wiringManager->keyboardRead();
+    char wasPressed = 0;
 
-    if (pressed == 0) return;
-
-    if (pressed == lastKey && millis() - lastKeyTime < KEY_PAUSE_THRESHOLD) {
-        // Skipping pressed key - too fast
+    if (current != lastKey && millis() - lastKeyTime < KEY_PAUSE_THRESHOLD) {
+        // Skipping current key - may be shimmering
         return;
     }
 
-//    Serial.print("Pressed key: ");
-//    Serial.println(pressed);
+    if (current != 0) {
+        // pressed key!
+        lastKey = current;
+        lastKeyTime = millis();
+    } else {
+        // released or nothing
+        if (lastKey != 0) {
+            wasPressed = lastKey;
+            lastKey = 0;
+        }
+    }
 
-    lastKey = pressed;
-    lastKeyTime = millis();
+    if (wasPressed == 0) return;
 
-    switch (pressed) {
+    switch (wasPressed) {
+        case 'A':
+        case 'B':
+        case 'C':
+        case 'D':
+            // ignore
+            break;
         case '*':
+            Serial.println("Cleaning keyboard buffer");
             clean();
             break;
         case '#':
+            Serial.println("Pressed #, verifying the answer");
             stateManager->verify(MODULE_KEYBOARD, pressedKeyBuffer);
             clean();
             break;
         default:
-            append(pressed);
+            Serial.print("Pressed key: ");
+            Serial.println(wasPressed);
+
+            append(wasPressed);
     }
 }
 
