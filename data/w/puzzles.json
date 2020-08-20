@@ -6,8 +6,8 @@
         "text": "Která barva není barvou duhy?"
       },
       {
-        "text": "Do barevných políček doplňte číslice tak, aby výrazy dávaly dobrý smysl. Odpověď poté zadejte pomocí drátů počínaje od barvy, která je nahrazena nejvyšší číslicí.",
-        "image": "barvy.png"
+        "text": "Do barevných políček doplňte číslice tak, aby výrazy dávaly dobrý smysl. Odpověď poté zadejte pomocí drátů počínaje od barvy, která je nahrazena nejnižší cifrou.",
+        "img": "colors.png"
       }
     ]
   },
@@ -22,7 +22,7 @@
       },
       {
         "text": "Jaký je kód k zámku?\n\nČerná tečka \t- některé číslo je správné i na správném místě.\n\nBílá tečka \t- některé číslo je správné, ale na špatném místě.",
-        "image": "lock.png"
+        "img": "lock.png"
       },
       {
         "text": "Zde leží Abram, jaký to div,\nalgebra poví, jak dlouho byl živ:\nBůh dal mu dětský věk šestinu žití,\ndvanáctinu pak, než vousy mohl míti.\nPo další sedmině svou ženu si vzal,\na za pět let otcem syna se stal.\nAch, ubohé to dítě mudrce a pána!\nŽil dvakrát míň než otec a už mu zvoní hrana!\nJeště čtyři léta do čísel se nořil,\nnež i jeho čas se konečně završil.\n\nJakého věku se dožil Abram.\n"
