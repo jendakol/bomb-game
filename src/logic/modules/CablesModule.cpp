@@ -49,7 +49,7 @@ void CablesModule::checkCableConnections() {
         Serial.print(value, BIN);
         Serial.print(" ");
         Serial.println(col);
-        this->stateManager->explode();
+//        this->stateManager->explode();
         return;
     }
 
