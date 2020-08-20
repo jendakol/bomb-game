@@ -8,6 +8,9 @@
       {
         "text": "Do barevných políček doplňte číslice tak, aby výrazy dávaly dobrý smysl. Odpověď poté zadejte pomocí drátů počínaje od barvy, která je nahrazena nejnižší cifrou.",
         "img": "colors.png"
+      },
+      {
+        "text": "Použijte pět stejných číslic a libovolné množství matematických znamének <b>+</b>, abyste zapsali číslo 14. V úloze se tedy nesmí vyskytovat jakékoli jiné znaménko, než <b>+</b> a jen jedna libovolná číslice, ovšem přesně pětkrát. <br/><br/>Odpověď zadejte pomocí drátů víte-li, že modrý odpovídá 1, zelený 2, červený 3, černý 4 a žlutý 5."
       }
     ]
   },
@@ -21,11 +24,10 @@
         "text": "V JZD Stvolínky je potřeba okovat koně. Ve stájích je rušno a líným soudruhům se nechce počítat, kolik je ve stájích koní. Kromě nich se tam totiž pohybují i lidé, kteří se o ně starají. První soudruh ležící na seně spočítal, že aktuálně je ve stájích 72 nohou. Druhý, sedící na stropním trámu napočítal 22 hlav. Kolik podkov je potřeba připravit, aby vystačily na všechna kopyta?"
       },
       {
-        "text": "Jaký je kód k zámku?\n\nČerná tečka \t- některé číslo je správné i na správném místě.\n\nBílá tečka \t- některé číslo je správné, ale na špatném místě.",
-        "img": "lock.png"
+        "text": "Selka prodává vajíčka. Přijde k ní kupec a koupí si polovinu vajíček a k tomu půlku vajíčka. Další kupec si koupí půlku zbytku a půlku vajíčka. Třetí kupec si koupí půlku zbývajícího zbytku a půlku vajíčka. Po tom nezbude ani jedno. Vajíčka se nedají půlit, kolik vajíček tedy bylo na začátku?"
       },
       {
-        "text": "Zde leží Abram, jaký to div,\nalgebra poví, jak dlouho byl živ:\nBůh dal mu dětský věk šestinu žití,\ndvanáctinu pak, než vousy mohl míti.\nPo další sedmině svou ženu si vzal,\na za pět let otcem syna se stal.\nAch, ubohé to dítě mudrce a pána!\nŽil dvakrát míň než otec a už mu zvoní hrana!\nJeště čtyři léta do čísel se nořil,\nnež i jeho čas se konečně završil.\n\nJakého věku se dožil Abram.\n"
+        "text": "Zde leží Abram, jaký to div,<br/>algebra poví, jak dlouho byl živ:<br/>Bůh dal mu dětský věk šestinu žití,<br/>dvanáctinu pak, než vousy mohl míti.<br/>Po další sedmině svou ženu si vzal,<br/>a za pět let otcem syna se stal.<br/>Ach, ubohé to dítě mudrce a pána!<br/>Žil dvakrát míň než otec a už mu zvoní hrana!<br/>Ještě čtyři léta do čísel se nořil,<br/>než i jeho čas se konečně završil.<br/><br/>Jakého věku se dožil Abram?<br/>"
       }
     ]
   }
