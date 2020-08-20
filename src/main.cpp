@@ -23,8 +23,14 @@ void setup() {
     stateManager.begin();
     modulesManager.begin();
 
-    NetworkTasker.once([] {
-        AccessPoint::begin(WIFI_SSID, WIFI_PASSWORD);
+    String serial = AccessPoint::serialNumberForMac();
+    String ssid = WIFI_SSID_PREFIX + serial;
+    String password = serial;
+
+    Serial.printf("Using SSID %s and password %s\n", ssid.c_str(), password.c_str());
+
+    NetworkTasker.once([ssid, password] {
+        AccessPoint::begin(ssid.c_str(), password.c_str());
         webServer.begin(jsonConnector);
     });
 }

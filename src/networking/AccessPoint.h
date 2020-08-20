@@ -6,6 +6,7 @@
 class AccessPoint {
 public:
     static void begin(const char *ssid, const char *password);
+    static String serialNumberForMac();
 };
 
 #endif //BOMBA_ACCESSPOINT_H

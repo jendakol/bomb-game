@@ -15,7 +15,7 @@
                         <img v-if="puzzleModule.puzzles[this.pagiPage - 2].img != null"
                              :src='"/puzzimgs/" + puzzleModule.puzzles[this.pagiPage - 2].img'/>
 
-                        {{ this.puzzleModule.puzzles[this.pagiPage - 2].text }}
+                        <div v-html="this.puzzleModule.puzzles[this.pagiPage - 2].text"></div>
                     </v-card-text>
                 </v-card>
             </v-container>
@@ -43,6 +43,10 @@ export default {
             pagiPage: Number.parseInt(this.$route.params.page),
             moduleNames: {"cables": "Drátový modul", "keyboard": "Číselný modul"},
         }
+    },
+    beforeRouteUpdate: function (to, from, next) {
+        this.pagiPage = to.params.page
+        next()
     },
     methods: {
         changePage: function () {

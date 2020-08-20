@@ -8,8 +8,7 @@
 
 #include "Tasker.h"
 
-#define WIFI_SSID "bomba"
-#define WIFI_PASSWORD "12345678"
+#define WIFI_SSID_PREFIX "BMBSTV2020WOQ_"
 
 #define STATIC_FILES_PREFIX "/w"
 #define HTTP_PORT 80
