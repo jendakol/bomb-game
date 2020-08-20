@@ -39,8 +39,8 @@
                 if (this.selectedVersion === this.items[1]) {
                     this.isManualSelected = true;
                 } else {
-                    let toast = this.$snotify.error("Požadovaný manuál nebyl nalezen!\nBude zobrazen příbuzný model BMBSTV2020WQ.", {
-                        timeout: 5000,
+                    let toast = this.$snotify.error("Požadovaný manuál nebyl nalezen!\nBude zobrazen manuál k příbuznému modelu BMBSTV2020WQ, který je psán v hádankách.", {
+                        timeout: 8000,
                         position: SnotifyPosition.centerCenter,
                         backdrop: 0.9,
                     });
