@@ -4,9 +4,15 @@
 JsonConnector::JsonConnector() {
     webSocket = new AsyncWebSocket(WEBSOCKET_PATH);
 
+    ulong eventC = 0;
+
     webSocket->onEvent(
-            [this](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+            [this, eventC](AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data,
+                           size_t len) mutable {
                 onWsEvent(type, data, len);
+                if (eventC++ % 10 == 0) {
+                    server->cleanupClients();
+                }
             }
     );
 }

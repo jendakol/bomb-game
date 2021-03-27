@@ -26,6 +26,7 @@ void WiringManager::begin() {
     // init alphanum display:
     selectChannel(CHANNEL_ALPHANUM4);
     alphaNum4.begin(ADDR_ALPHANUM4);
+    alphaNum4.setBrightness(15);
 
     alphaNum4.writeDigitAscii(0, '-');
     alphaNum4.writeDigitAscii(1, '-');
@@ -120,7 +121,9 @@ void WiringManager::alphaNumWrite(const char segments[4]) {
     std::lock_guard<std::mutex> lg(mutex);
 
     selectChannel(CHANNEL_ALPHANUM4);
+    alphaNum4.setBrightness(15);
     alphaNum4.clear();
+    alphaNum4.setBrightness(15);
 
     for (uint8_t i = 0; i <= 3; i++) {
         // TODO align to right?
@@ -130,7 +133,9 @@ void WiringManager::alphaNumWrite(const char segments[4]) {
         }
     }
 
+    alphaNum4.setBrightness(15);
     alphaNum4.writeDisplay();
+    alphaNum4.setBrightness(15);
 }
 
 char WiringManager::keyboardRead() {

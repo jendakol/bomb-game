@@ -14,7 +14,7 @@ void CablesModule::begin() {
 
     DefaultTasker.loopEvery(INTERVAL, [this] {
         if (stateManager->getState() == STATE_RUNNING)
-        checkCableConnections();
+            checkCableConnections();
     });
 }
 
